@@ -1,0 +1,11 @@
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.mypy]
+python_version = "3.12"
+packages = ["crypto_service"]
+strict = true
+
+[tool.bandit]
+skips = ["B101"]  # assert_used

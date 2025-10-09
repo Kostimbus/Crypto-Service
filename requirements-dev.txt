@@ -1,0 +1,6 @@
+pytest
+hypothesis
+ruff
+mypy
+bandit
+semgrep
