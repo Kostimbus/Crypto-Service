@@ -96,20 +96,23 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Downcase REPO
+        run: echo "REPO=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
+
       - name: Build and push image (GHCR)
         uses: docker/build-push-action@v4
         with:
           context: .
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}:${{ github.sha }}
-            ghcr.io/${{ github.repository }}:latest
+            ghcr.io/${{ env.REPO }}:${{ github.sha }}
+            ghcr.io/${{ env.REPO }}:latest
           platforms: linux/amd64,linux/arm64
 
       - name: Install Syft (SBOM) & generate SBOM for image
         run: |
           curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
-          syft ghcr.io/${{ github.repository }}:${{ github.sha }} -o spdx-json=sbom.json
+          syft ghcr.io/${{ env.REPO }}:${{ github.sha }} -o spdx-json=sbom.json
 
       - name: Install Grype & scan SBOM (CVE check)
         run: |
@@ -126,10 +129,8 @@ jobs:
         env:
           COSIGN_EXPERIMENTAL: "1"
         run: |
-          # keyless sign uses the runner's OIDC id-token; workflow permissions must include id-token: write
-          cosign sign --keyless ghcr.io/${{ github.repository }}:${{ github.sha }}
+          cosign sign --keyless ghcr.io/${{ env.REPO }}:${{ github.sha }}
 
       - name: Annotate release (optional)
         run: |
-          echo "Image published: ghcr.io/${{ github.repository }}:${{ github.sha }}"
-
+          echo "Image published: ghcr.io/${{ env.REPO }}:${{ github.sha }}"
