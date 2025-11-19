@@ -1,4 +1,16 @@
-# Crypto Service
+# Crypto Service - Secure Signing & Encryption Microservice
+
+## A production-ready FastAPI-based cryptography microservice implementing:
+- Ed25519 digital signatures (sign/verify)
+- ChaCha20-Poly1305 AEAD encryption (encrypt/decrypt)
+- Key rotation support with externally mounted secret keys
+- Strict type checking with mypy, ruff, bandit, semgrep, pytest
+- Full CI/CD pipeline using GitHub Actions, including:
+    - static analysis (SAST)
+    - tests
+    - Docker multi-stage build
+    - push to GHCR
+
 
 ## Used algorithms
 
